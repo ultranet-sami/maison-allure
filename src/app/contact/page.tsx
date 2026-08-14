@@ -1,10 +1,11 @@
 "use client";
-import type { Metadata } from "next";
 import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Linkedin } from "lucide-react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
-const metadata = {
-  title: "Contact",
-  description: "Contactez Maison Allure pour reserver votre consultation en conseil en image. Paris et visioconference disponibles pour la clientele internationale.",
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
 const services = [
@@ -20,31 +21,99 @@ const services = [
   "Autre",
 ];
 
-const budgets = [
-  "Moins de 200€",
-  "200€ - 500€",
-  "500€ - 1000€",
-  "1000€ - 2000€",
-  "Plus de 2000€",
-  "Je souhaite discuter",
-];
+// -------------------------------------------------------------------
+// CALENDLY CONFIGURATION
+// 1. Creer un compte gratuit sur calendly.com
+// 2. Configurer vos disponibilites
+// 3. Remplacer "votre-username" ci-dessous par votre vrai username Calendly
+// -------------------------------------------------------------------
+const CALENDLY_URL = "https://calendly.com/votre-username/consultation-maison-allure";
 
 export default function ContactPage() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("sending");
+
+    const form = e.currentTarget;
+    const data = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
+      service: (form.elements.namedItem("service") as HTMLSelectElement).value,
+      budget: (form.elements.namedItem("budget") as HTMLSelectElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        form.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const openCalendly = () => {
+    if (typeof window !== "undefined" && (window as any).Calendly) {
+      (window as any).Calendly.initPopupWidget({ url: CALENDLY_URL });
+    } else {
+      window.open(CALENDLY_URL, "_blank");
+    }
+  };
+
   return (
     <>
       {/* HERO */}
-      <section className="pt-40 pb-24 bg-ivory">
+      <motion.section
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.15 } } }}
+        className="pt-40 pb-24 bg-ivory"
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <p className="section-subtitle mb-4">Nous Contacter</p>
-          <h1 className="section-title max-w-2xl mb-6">
+          <motion.p variants={fadeUp} className="section-subtitle mb-4">Nous Contacter</motion.p>
+          <motion.h1 variants={fadeUp} className="section-title max-w-2xl mb-6">
             Commençons Votre<br />
             <em className="text-gold">Transformation Ensemble</em>
-          </h1>
-          <span className="block w-16 h-px bg-gold mb-8" />
-          <p className="font-montserrat text-sm text-black/60 max-w-xl leading-relaxed">
+          </motion.h1>
+          <motion.span variants={fadeUp} className="block w-16 h-px bg-gold mb-8" />
+          <motion.p variants={fadeUp} className="font-montserrat text-sm text-black/60 max-w-xl leading-relaxed">
             Prete a investir dans votre image ? Prenez rendez-vous pour une consultation
             decouverte et parlons de vos objectifs, vos besoins et la transformation
             que vous souhaitez accomplir.
+          </motion.p>
+        </div>
+      </motion.section>
+
+      {/* BOOKING CTA - CALENDLY */}
+      <section className="py-16 bg-black">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="section-subtitle mb-4 text-gold">Reservation en Ligne</p>
+          <h2 className="font-playfair text-3xl text-[#FCFAF7] mb-4">
+            Reservez Votre Consultation Directement
+          </h2>
+          <p className="font-montserrat text-sm text-[#C8B8A6] mb-8 max-w-xl mx-auto">
+            Choisissez le creneau qui vous convient le mieux dans notre agenda en ligne.
+            Consultation disponible en presentiel a Paris ou en visioconference.
+          </p>
+          <button
+            onClick={openCalendly}
+            className="btn-gold inline-block"
+          >
+            Voir les Disponibilites
+          </button>
+          <p className="font-montserrat text-[10px] text-[#C8B8A6]/60 mt-4">
+            Powered by Calendly — Confirmation immediate par email
           </p>
         </div>
       </section>
@@ -53,63 +122,47 @@ export default function ContactPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20">
           {/* Contact Info */}
-          <div>
-            <p className="section-subtitle mb-4">Informations</p>
-            <h2 className="section-title mb-8">Parlons de Vous</h2>
-            <p className="font-montserrat text-sm text-black/70 leading-relaxed mb-10">
-              Chaque transformation commence par une conversation. Partagez vos aspirations,
-              vos contraintes et vos objectifs. Nous vous proposerons l&apos;accompagnement
-              le plus adapte a votre situation.
-            </p>
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={{ show: { transition: { staggerChildren: 0.1 } } }}
+          >
+            <motion.div variants={fadeUp}>
+              <p className="section-subtitle mb-4">Informations</p>
+              <h2 className="section-title mb-8">Parlons de Vous</h2>
+              <p className="font-montserrat text-sm text-black/70 leading-relaxed mb-10">
+                Chaque transformation commence par une conversation. Partagez vos aspirations,
+                vos contraintes et vos objectifs. Nous vous proposerons l&apos;accompagnement
+                le plus adapte a votre situation.
+              </p>
+            </motion.div>
 
-            {/* Contact Details */}
             <div className="space-y-6 mb-10">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 border border-gold/30 flex items-center justify-center shrink-0">
-                  <MapPin size={16} className="text-gold" />
-                </div>
-                <div>
-                  <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 mb-1">Adresse</div>
-                  <div className="font-montserrat text-sm text-black/70">Paris, France</div>
-                  <div className="font-montserrat text-xs text-black/50">Consultations sur rendez-vous</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 border border-gold/30 flex items-center justify-center shrink-0">
-                  <Phone size={16} className="text-gold" />
-                </div>
-                <div>
-                  <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 mb-1">Telephone</div>
-                  <a href="tel:+33600000000" className="font-montserrat text-sm text-black/70 hover:text-gold transition-colors">
-                    +33 6 00 00 00 00
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 border border-gold/30 flex items-center justify-center shrink-0">
-                  <Mail size={16} className="text-gold" />
-                </div>
-                <div>
-                  <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 mb-1">Email</div>
-                  <a href="mailto:contact@maison-allure.fr" className="font-montserrat text-sm text-black/70 hover:text-gold transition-colors">
-                    contact@maison-allure.fr
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 border border-gold/30 flex items-center justify-center shrink-0">
-                  <Clock size={16} className="text-gold" />
-                </div>
-                <div>
-                  <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 mb-1">Disponibilites</div>
-                  <div className="font-montserrat text-sm text-black/70">Lundi - Samedi : 9h - 19h</div>
-                  <div className="font-montserrat text-xs text-black/50">Visioconference pour clientele internationale</div>
-                </div>
-              </div>
+              {[
+                { Icon: MapPin, label: "Adresse", main: "Paris, France", sub: "Consultations sur rendez-vous" },
+                { Icon: Phone, label: "Telephone", main: "+33 6 00 00 00 00", link: "tel:+33600000000" },
+                { Icon: Mail, label: "Email", main: "contact@maison-allure.fr", link: "mailto:contact@maison-allure.fr" },
+                { Icon: Clock, label: "Disponibilites", main: "Lundi - Samedi : 9h - 19h", sub: "Visioconference pour clientele internationale" },
+              ].map(({ Icon, label, main, sub, link }) => (
+                <motion.div key={label} variants={fadeUp} className="flex items-start gap-4">
+                  <div className="w-10 h-10 border border-gold/30 flex items-center justify-center shrink-0">
+                    <Icon size={16} className="text-gold" />
+                  </div>
+                  <div>
+                    <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 mb-1">{label}</div>
+                    {link ? (
+                      <a href={link} className="font-montserrat text-sm text-black/70 hover:text-gold transition-colors">{main}</a>
+                    ) : (
+                      <div className="font-montserrat text-sm text-black/70">{main}</div>
+                    )}
+                    {sub && <div className="font-montserrat text-xs text-black/50">{sub}</div>}
+                  </div>
+                </motion.div>
+              ))}
             </div>
 
-            {/* Social */}
-            <div>
+            <motion.div variants={fadeUp}>
               <div className="font-montserrat text-[10px] tracking-[0.3em] uppercase text-black/40 mb-4">Reseaux Sociaux</div>
               <div className="flex gap-3">
                 {[
@@ -123,84 +176,99 @@ export default function ContactPage() {
                   </a>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             {/* Map placeholder */}
-            <div className="mt-10 bg-ivory aspect-[16/9] flex items-center justify-center border border-taupe/20">
+            <motion.div variants={fadeUp} className="mt-10 bg-ivory aspect-[16/9] flex items-center justify-center border border-taupe/20">
               <div className="text-center">
                 <MapPin size={24} className="text-gold mx-auto mb-2" />
                 <div className="font-montserrat text-xs text-black/40">Paris, France</div>
-                <div className="font-montserrat text-[10px] text-black/30">Integrer Google Maps ici</div>
+                <div className="font-montserrat text-[10px] text-black/30">
+                  Remplacez par un embed Google Maps
+                </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Form */}
-          <div className="bg-ivory p-10">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="bg-ivory p-10"
+          >
             <h3 className="font-playfair text-2xl mb-2">Demande de Consultation</h3>
-            <p className="font-montserrat text-xs text-black/50 mb-8">
-              Reponse garantie sous 24h ouvrables
-            </p>
-            <form className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Prenom *</label>
-                  <input type="text" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
+            <p className="font-montserrat text-xs text-black/50 mb-8">Reponse garantie sous 24h ouvrables</p>
+
+            {status === "sent" ? (
+              <div className="text-center py-12">
+                <div className="font-playfair text-3xl text-gold mb-4">Merci !</div>
+                <p className="font-montserrat text-sm text-black/70">
+                  Votre message a ete envoye. Nous vous recontacterons sous 24 heures.
+                </p>
+              </div>
+            ) : (
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Prenom *</label>
+                    <input name="name" type="text" required className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
+                  </div>
+                  <div>
+                    <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Nom</label>
+                    <input name="lastname" type="text" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
+                  </div>
                 </div>
                 <div>
-                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Nom *</label>
-                  <input type="text" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
+                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Email *</label>
+                  <input name="email" type="email" required className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
                 </div>
-              </div>
-              <div>
-                <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Email *</label>
-                <input type="email" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
-              </div>
-              <div>
-                <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Telephone</label>
-                <input type="tel" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
-              </div>
-              <div>
-                <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Service Souhaite *</label>
-                <select className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none">
-                  <option value="">Selectionnez un service</option>
-                  {services.map((s) => <option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Budget Envisage</label>
-                <select className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none">
-                  <option value="">Selectionnez une fourchette</option>
-                  {budgets.map((b) => <option key={b}>{b}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Modalite Preferee</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {["Presentiel (Paris)", "Visioconference", "Flexible"].map((m) => (
-                    <label key={m} className="flex items-center gap-3 border border-taupe/40 bg-white px-4 py-3 cursor-pointer hover:border-gold transition-colors">
-                      <input type="radio" name="modalite" className="accent-gold" />
-                      <span className="font-montserrat text-xs">{m}</span>
-                    </label>
-                  ))}
+                <div>
+                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Telephone</label>
+                  <input name="phone" type="tel" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none" />
                 </div>
-              </div>
-              <div>
-                <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Votre Message *</label>
-                <textarea
-                  rows={5}
-                  placeholder="Parlez-nous de vous, de vos objectifs et de ce que vous souhaitez ameliorer dans votre image..."
-                  className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none resize-none"
-                />
-              </div>
-              <button type="submit" className="btn-primary w-full">
-                Envoyer Ma Demande
-              </button>
-              <p className="font-montserrat text-[10px] text-black/40 text-center">
-                En soumettant ce formulaire, vous acceptez notre politique de confidentialite.
-              </p>
-            </form>
-          </div>
+                <div>
+                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Service Souhaite *</label>
+                  <select name="service" required className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none">
+                    <option value="">Selectionnez un service</option>
+                    {services.map((s) => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Budget Envisage</label>
+                  <select name="budget" className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none">
+                    <option value="">Selectionnez une fourchette</option>
+                    {["Moins de 200€", "200€ - 500€", "500€ - 1000€", "1000€ - 2000€", "Plus de 2000€", "Je souhaite discuter"].map((b) => (
+                      <option key={b}>{b}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/40 block mb-2">Votre Message *</label>
+                  <textarea
+                    name="message"
+                    rows={5}
+                    required
+                    placeholder="Parlez-nous de vous, de vos objectifs et de ce que vous souhaitez ameliorer dans votre image..."
+                    className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none resize-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === "sending"}
+                  className="btn-primary w-full disabled:opacity-60"
+                >
+                  {status === "sending" ? "Envoi en cours..." : "Envoyer Ma Demande"}
+                </button>
+                {status === "error" && (
+                  <p className="font-montserrat text-xs text-red-500 text-center">
+                    Une erreur est survenue. Veuillez reessayer ou nous contacter directement par email.
+                  </p>
+                )}
+              </form>
+            )}
+          </motion.div>
         </div>
       </section>
 
@@ -218,12 +286,18 @@ export default function ContactPage() {
               { q: "Travaillez-vous en ligne ?", a: "Oui, nous proposons des consultations en visioconference pour notre clientele hors Paris et internationale. La plupart de nos services peuvent etre adaptes a distance." },
               { q: "Combien de temps dure une seance ?", a: "Les seances varient de 2h (analyse colorimetrique simple) a une journee complete (conseil en image global). Nous definissons la duree lors de notre premier echange." },
               { q: "Faut-il avoir un budget mode important ?", a: "Absolument pas. Notre expertise s'adapte a tous les budgets. Nous maximisons ce que vous avez deja et vous guidons vers des achats rentables et durables." },
-              { q: "Combien de temps avant de voir des resultats ?", a: "Les premiers resultats sont visibles des la premiere seance. La transformation complete, avec une nouvelle garde-robe coherente, se fait sur 1 a 3 mois selon les services choisis." },
+              { q: "Combien de temps avant de voir des resultats ?", a: "Les premiers resultats sont visibles des la premiere seance. La transformation complete se fait sur 1 a 3 mois selon les services choisis." },
             ].map((faq) => (
-              <div key={faq.q} className="bg-white p-6 border-l-2 border-gold">
+              <motion.div
+                key={faq.q}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white p-6 border-l-2 border-gold"
+              >
                 <h3 className="font-playfair text-base mb-3">{faq.q}</h3>
                 <p className="font-montserrat text-sm text-black/60 leading-relaxed">{faq.a}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

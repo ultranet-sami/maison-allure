@@ -1,6 +1,17 @@
 "use client";
 import Link from "next/link";
 import { ArrowRight, Star, Check } from "lucide-react";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const stagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.15 } },
+};
 
 const services = [
   { title: "Analyse Colorimetrique", desc: "Decouvrez la palette de couleurs qui sublime votre teint et votre personnalite.", href: "/color-analysis" },
@@ -22,19 +33,19 @@ const testimonials = [
   {
     name: "Sophie M.",
     role: "Directrice Marketing",
-    text: "Maison Allure a litteralement transforme ma facon de m'habiller et de me presenter. Mon image professionnelle a gagne en impact et en coherence. Je me sens enfin alignee avec qui je suis vraiment.",
+    text: "Maison Allure a litteralement transforme ma facon de me presenter. Je me sens enfin alignee avec qui je suis vraiment.",
     rating: 5,
   },
   {
     name: "Laurent D.",
     role: "Entrepreneur",
-    text: "En tant qu'homme, je n'aurais jamais imagine faire appel a un conseil en image. C'etait la meilleure decision de ma carriere. Mon image est maintenant un atout majeur dans mes negociations.",
+    text: "La meilleure decision de ma carriere. Mon image est maintenant un atout majeur dans mes negociations.",
     rating: 5,
   },
   {
     name: "Isabelle R.",
     role: "Avocate",
-    text: "L'analyse colorimetrique a ete une revelation. Je porte maintenant les couleurs qui me mettent en valeur et je recois des compliments chaque jour. Un investissement inestimable.",
+    text: "L'analyse colorimetrique a ete une revelation. Je porte maintenant les couleurs qui me subliment chaque jour.",
     rating: 5,
   },
 ];
@@ -42,56 +53,126 @@ const testimonials = [
 const steps = [
   { step: "01", title: "Consultation Initiale", desc: "Un entretien approfondi pour comprendre votre personnalite, vos objectifs et votre mode de vie." },
   { step: "02", title: "Analyse & Diagnostic", desc: "Analyse colorimetrique, morphologique et de style pour un portrait complet de votre identite." },
-  { step: "03", title: "Strategie Stylistique", desc: "Creation de votre guide personnalise : couleurs, coupes, matieres et styles adaptés." },
-  { step: "04", title: "Transformation", desc: "Mise en oeuvre concrète avec accompagnement shopping et optimisation de votre garde-robe." },
+  { step: "03", title: "Strategie Stylistique", desc: "Creation de votre guide personnalise : couleurs, coupes, matieres et styles adaptes." },
+  { step: "04", title: "Transformation", desc: "Mise en oeuvre concrete avec accompagnement shopping et optimisation de votre garde-robe." },
 ];
 
 export default function HomePage() {
   return (
     <>
-      {/* HERO */}
-      <section className="relative min-h-screen bg-[#1F1F1F] flex items-center overflow-hidden">
-        {/* Background pattern */}
+      {/* HERO - VIDEO BACKGROUND */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#1F1F1F]">
+        {/* Video background - remplacer /hero.mp4 par votre vraie video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          poster="/hero-poster.jpg"
+        >
+          {/* Ajouter votre video: copier hero.mp4 dans le dossier public/ */}
+          {/* <source src="/hero.mp4" type="video/mp4" /> */}
+        </video>
+
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1F1F1F] via-[#1F1F1F]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1F1F1F]/60 via-transparent to-transparent" />
+
+        {/* Gold diagonal pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
             backgroundImage: "repeating-linear-gradient(45deg, #C6A46A 0, #C6A46A 1px, transparent 0, transparent 50%)",
             backgroundSize: "20px 20px"
           }} />
         </div>
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#C6A46A]/10 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-20">
-          <div className="max-w-3xl">
-            <p className="section-subtitle mb-6 text-gold">Maison de Conseil en Image</p>
-            <h1 className="font-playfair text-5xl md:text-7xl font-normal text-[#FCFAF7] leading-[1.1] mb-8">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={stagger}
+            className="max-w-3xl"
+          >
+            <motion.p variants={fadeUp} className="section-subtitle mb-6 text-gold">
+              Maison de Conseil en Image
+            </motion.p>
+            <motion.h1
+              variants={fadeUp}
+              className="font-playfair text-5xl md:text-7xl font-normal text-[#FCFAF7] leading-[1.1] mb-8"
+            >
               L&apos;Art de Reveler{" "}
               <em className="text-gold not-italic">Votre Elegance</em>{" "}
               Naturelle
-            </h1>
-            <p className="font-montserrat text-base text-[#C8B8A6] leading-relaxed mb-12 max-w-xl">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="font-montserrat text-base text-[#C8B8A6] leading-relaxed mb-12 max-w-xl"
+            >
               Inspiree de l&apos;elegance francaise intemporelle, Maison Allure vous accompagne
               dans la revelation de votre style unique — en parfaite harmonie avec votre personnalite,
               votre morphologie et vos aspirations.
-            </p>
-            <div className="flex flex-wrap gap-4">
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <Link href="/contact" className="btn-gold">
                 Prendre Rendez-vous
               </Link>
               <Link href="/services" className="btn-outline border-[#FCFAF7] text-[#FCFAF7] hover:bg-[#FCFAF7] hover:text-black">
                 Decouvrir Nos Services
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
-        {/* Decorative line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+        {/* Animated scroll indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+        >
+          <span className="font-montserrat text-[9px] tracking-[0.3em] uppercase text-[#C8B8A6]">Decouvrir</span>
+          <motion.div
+            className="w-px h-12 bg-gradient-to-b from-gold to-transparent"
+            animate={{ scaleY: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
       </section>
 
+      {/* STATS BAR */}
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={stagger}
+        className="py-12 bg-black border-y border-gold/20"
+      >
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { num: "500+", label: "Clients Transformes" },
+            { num: "10+", label: "Annees d'Experience" },
+            { num: "98%", label: "Satisfaction Client" },
+            { num: "13", label: "Services Sur Mesure" },
+          ].map((s) => (
+            <motion.div key={s.label} variants={fadeUp}>
+              <div className="font-playfair text-3xl text-gold mb-1">{s.num}</div>
+              <div className="font-montserrat text-[9px] tracking-[0.2em] uppercase text-[#C8B8A6]">{s.label}</div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
       {/* ABOUT PREVIEW */}
-      <section className="py-32 bg-ivory">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="py-32 bg-ivory"
+      >
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <div>
+          <motion.div variants={fadeUp}>
             <p className="section-subtitle mb-4">Notre Histoire</p>
             <h2 className="section-title mb-6">
               L&apos;Elegance Francaise<br />
@@ -111,111 +192,174 @@ export default function HomePage() {
             <Link href="/about" className="btn-primary">
               Notre Histoire
             </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-6">
+          </motion.div>
+          <motion.div variants={stagger} className="grid grid-cols-2 gap-6">
             {[
               { num: "500+", label: "Clients Transformes" },
               { num: "10+", label: "Annees d'Experience" },
               { num: "98%", label: "Satisfaction Client" },
               { num: "13", label: "Services Sur Mesure" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white p-8 border border-taupe/20 text-center">
+              <motion.div
+                key={stat.label}
+                variants={fadeUp}
+                whileHover={{ scale: 1.03, borderColor: "#C6A46A" }}
+                className="bg-white p-8 border border-taupe/20 text-center transition-all duration-300"
+              >
                 <div className="font-playfair text-4xl text-gold mb-2">{stat.num}</div>
                 <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-black/60">{stat.label}</div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* SERVICES */}
-      <section className="py-32 bg-white">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="py-32 bg-white"
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div variants={fadeUp} className="text-center mb-16">
             <p className="section-subtitle mb-4">Notre Expertise</p>
             <h2 className="section-title mb-4">Services de Conseil en Image</h2>
             <span className="gold-divider" />
             <p className="font-montserrat text-sm text-black/60 max-w-xl mx-auto mt-4">
               Un accompagnement complet et personnalise pour chaque facette de votre image personnelle et professionnelle.
             </p>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-taupe/20">
-            {services.map((s) => (
-              <div key={s.title} className="bg-white p-10 group hover:bg-ivory transition-colors duration-300">
-                <div className="w-8 h-px bg-gold mb-6 group-hover:w-16 transition-all duration-300" />
+            {services.map((s, i) => (
+              <motion.div
+                key={s.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                whileHover={{ backgroundColor: "#F6F2EA" }}
+                className="bg-white p-10 group cursor-pointer transition-colors duration-300"
+              >
+                <motion.div
+                  className="w-8 h-px bg-gold mb-6"
+                  whileHover={{ width: 64 }}
+                  transition={{ duration: 0.3 }}
+                />
                 <h3 className="font-playfair text-xl mb-3">{s.title}</h3>
                 <p className="font-montserrat text-sm text-black/60 leading-relaxed mb-6">{s.desc}</p>
                 <Link href={s.href} className="inline-flex items-center gap-2 font-montserrat text-[10px] tracking-[0.2em] uppercase text-gold hover:gap-4 transition-all duration-300">
                   Decouvrir <ArrowRight size={12} />
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
-          <div className="text-center mt-12">
+          <motion.div variants={fadeUp} className="text-center mt-12">
             <Link href="/services" className="btn-outline">
               Tous Nos Services
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* VALUES */}
-      <section className="py-32 bg-black">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="py-32 bg-black"
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div variants={fadeUp} className="text-center mb-16">
             <p className="section-subtitle mb-4 text-gold">Nos Valeurs</p>
             <h2 className="font-playfair text-4xl md:text-5xl text-[#FCFAF7] mb-4">
               Pourquoi Choisir<br /><em className="text-gold">Maison Allure</em>
             </h2>
             <span className="gold-divider" />
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((v) => (
-              <div key={v.num} className="border border-gold/20 p-8 hover:border-gold transition-colors duration-300">
+            {values.map((v, i) => (
+              <motion.div
+                key={v.num}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.7 }}
+                whileHover={{ borderColor: "#C6A46A" }}
+                className="border border-gold/20 p-8 transition-colors duration-300"
+              >
                 <div className="font-playfair text-5xl text-gold/20 mb-4">{v.num}</div>
                 <h3 className="font-playfair text-xl text-[#FCFAF7] mb-3">{v.title}</h3>
                 <p className="font-montserrat text-xs text-[#C8B8A6] leading-relaxed">{v.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* TRANSFORMATION JOURNEY */}
-      <section className="py-32 bg-ivory">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="py-32 bg-ivory"
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div variants={fadeUp} className="text-center mb-16">
             <p className="section-subtitle mb-4">Notre Methode</p>
             <h2 className="section-title mb-4">Votre Parcours de Transformation</h2>
             <span className="gold-divider" />
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {steps.map((s) => (
-              <div key={s.step} className="relative">
+            {steps.map((s, i) => (
+              <motion.div
+                key={s.step}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2, duration: 0.7 }}
+              >
                 <div className="font-playfair text-6xl text-gold/15 mb-4">{s.step}</div>
                 <div className="w-8 h-px bg-gold mb-4" />
                 <h3 className="font-playfair text-xl mb-3">{s.title}</h3>
                 <p className="font-montserrat text-xs text-black/60 leading-relaxed">{s.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* TESTIMONIALS */}
-      <section className="py-32 bg-white">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="py-32 bg-white"
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div variants={fadeUp} className="text-center mb-16">
             <p className="section-subtitle mb-4">Temoignages</p>
             <h2 className="section-title mb-4">Ce Que Disent Nos Clients</h2>
             <span className="gold-divider" />
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t) => (
-              <div key={t.name} className="bg-ivory p-10 border-b-2 border-gold">
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2, duration: 0.7 }}
+                whileHover={{ y: -4 }}
+                className="bg-ivory p-10 border-b-2 border-gold"
+              >
                 <div className="flex gap-1 mb-6">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} size={12} className="fill-gold text-gold" />
+                  {Array.from({ length: t.rating }).map((_, idx) => (
+                    <Star key={idx} size={12} className="fill-gold text-gold" />
                   ))}
                 </div>
                 <p className="font-montserrat text-sm text-black/70 leading-relaxed mb-8 italic">
@@ -225,23 +369,41 @@ export default function HomePage() {
                   <div className="font-playfair text-base">{t.name}</div>
                   <div className="font-montserrat text-[10px] tracking-[0.2em] uppercase text-gold">{t.role}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-          <div className="text-center mt-12">
+          <motion.div variants={fadeUp} className="text-center mt-12">
             <Link href="/testimonials" className="btn-outline">
               Tous les Temoignages
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* CTA BAND */}
-      <section className="py-24 bg-gold">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="font-playfair text-4xl md:text-5xl text-[#1F1F1F] mb-6">
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1 }}
+        className="py-24 bg-gold relative overflow-hidden"
+      >
+        {/* Animated background lines */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: "repeating-linear-gradient(90deg, #1F1F1F 0, #1F1F1F 1px, transparent 0, transparent 60px)",
+          }} />
+        </div>
+        <div className="relative max-w-4xl mx-auto px-6 text-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="font-playfair text-4xl md:text-5xl text-[#1F1F1F] mb-6"
+          >
             Prete a Reveler Votre Style ?
-          </h2>
+          </motion.h2>
           <p className="font-montserrat text-sm text-[#1F1F1F]/70 mb-10 max-w-xl mx-auto">
             Commencez votre transformation avec une consultation personnalisee.
             Ensemble, construisons l&apos;image qui vous ressemble vraiment.
@@ -255,12 +417,18 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* CONTACT PREVIEW */}
-      <section className="py-24 bg-ivory">
+      <motion.section
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={stagger}
+        className="py-24 bg-ivory"
+      >
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
+          <motion.div variants={fadeUp}>
             <p className="section-subtitle mb-4">Nous Contacter</p>
             <h2 className="section-title mb-6">Votre Transformation<br />Commence Ici</h2>
             <span className="block w-16 h-px bg-gold mb-8" />
@@ -277,30 +445,61 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="bg-white p-10 shadow-sm">
+          </motion.div>
+          <motion.div variants={fadeUp} className="bg-white p-10 shadow-sm">
             <h3 className="font-playfair text-2xl mb-6">Demande de Consultation</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <input type="text" placeholder="Prenom" className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent" />
-                <input type="text" placeholder="Nom" className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent" />
-              </div>
-              <input type="email" placeholder="Email" className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent" />
-              <select className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent text-black/50">
-                <option value="">Service souhaite</option>
-                <option>Conseil en Image</option>
-                <option>Analyse Colorimetrique</option>
-                <option>Stylisme Personnel</option>
-                <option>Image Professionnelle</option>
-                <option>Stylisme Mariage</option>
-              </select>
-              <button type="submit" className="btn-primary w-full text-center">
-                Envoyer Ma Demande
-              </button>
-            </form>
-          </div>
+            <ContactForm />
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </>
+  );
+}
+
+function ContactForm() {
+  return (
+    <form
+      className="space-y-4"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const data = {
+          name: (form.elements.namedItem("name") as HTMLInputElement).value,
+          email: (form.elements.namedItem("email") as HTMLInputElement).value,
+          service: (form.elements.namedItem("service") as HTMLSelectElement).value,
+          message: "Demande de consultation via page d'accueil",
+        };
+        try {
+          const res = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          if (res.ok) {
+            alert("Votre demande a ete envoyee ! Nous vous recontacterons sous 24h.");
+            form.reset();
+          }
+        } catch {
+          alert("Une erreur est survenue. Veuillez reessayer.");
+        }
+      }}
+    >
+      <div className="grid grid-cols-2 gap-4">
+        <input name="name" type="text" placeholder="Prenom" required className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent" />
+        <input name="lastname" type="text" placeholder="Nom" className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent" />
+      </div>
+      <input name="email" type="email" placeholder="Email" required className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent" />
+      <select name="service" className="w-full border border-taupe/40 px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none bg-transparent text-black/50">
+        <option value="">Service souhaite</option>
+        <option>Conseil en Image</option>
+        <option>Analyse Colorimetrique</option>
+        <option>Stylisme Personnel</option>
+        <option>Image Professionnelle</option>
+        <option>Stylisme Mariage</option>
+      </select>
+      <button type="submit" className="btn-primary w-full text-center">
+        Envoyer Ma Demande
+      </button>
+    </form>
   );
 }
