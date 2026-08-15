@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,9 +10,9 @@ import { LanguageProvider } from "@/context/LanguageContext";
 // GOOGLE ANALYTICS - CONFIGURATION
 // 1. Aller sur analytics.google.com -> creer une propriete
 // 2. Copier votre Measurement ID (format: G-XXXXXXXXXX)
-// 3. Remplacer "G-XXXXXXXXXX" ci-dessous par votre vrai ID
+// 3. Dans Vercel Settings > Environment Variables, ajouter:
+//    NEXT_PUBLIC_GA_ID = G-VOTRE_VRAI_ID
 // -------------------------------------------------------------------
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || "G-XXXXXXXXXX";
 
 export const metadata: Metadata = {
   title: {
@@ -59,34 +60,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="fr">
       <head>
-        {/* Google Analytics - activé seulement si GA_MEASUREMENT_ID est configure */}
-        {GA_MEASUREMENT_ID !== "G-XXXXXXXXXX" && (
+        {gaId && (
           <>
             <script
               async
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             />
             <script
               dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${GA_MEASUREMENT_ID}', { page_path: window.location.pathname });
-                `,
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`,
               }}
             />
           </>
         )}
-        {/* Calendly CSS - preload */}
         <link
           href="https://assets.calendly.com/assets/external/widget.css"
           rel="stylesheet"
@@ -99,7 +91,6 @@ export default function RootLayout({
           <Footer />
           <Chatbot />
         </LanguageProvider>
-        {/* Calendly JS */}
         <script
           src="https://assets.calendly.com/assets/external/widget.js"
           async
