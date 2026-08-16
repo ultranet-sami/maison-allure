@@ -64,8 +64,10 @@ export default function ContactPage() {
   };
 
   const openCalendly = () => {
-    if (typeof window !== "undefined" && (window as any).Calendly) {
-      (window as any).Calendly.initPopupWidget({ url: CALENDLY_URL });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const win = window as any;
+    if (typeof window !== "undefined" && win.Calendly) {
+      win.Calendly.initPopupWidget({ url: CALENDLY_URL });
     } else {
       window.open(CALENDLY_URL, "_blank");
     }
