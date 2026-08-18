@@ -27,7 +27,7 @@ const services = [
 // 2. Configurer vos disponibilites
 // 3. Remplacer "votre-username" ci-dessous par votre vrai username Calendly
 // -------------------------------------------------------------------
-const CALENDLY_URL = "https://calendly.com/votre-username/consultation-maison-allure";
+const CALENDLY_URL = "https://calendly.com/sami-sahmarani/consultation-maison-allure";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
