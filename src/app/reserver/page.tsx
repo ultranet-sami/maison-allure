@@ -409,7 +409,7 @@ export default function ReserverPage() {
                   <td className="px-3 py-2 text-center text-black/70">{row.it}</td>
                   <td className="px-3 py-2 text-center text-black/70">{row.chest} cm</td>
                   <td className="px-3 py-2 text-center text-black/70">{row.waist} cm</td>
-                  {"hips" in row && gender === "femme" && <td className="px-3 py-2 text-center text-black/70">{row.hips} cm</td>}
+                  {"hips" in row && gender === "femme" && <td className="px-3 py-2 text-center text-black/70">{(row as {hips: string}).hips} cm</td>}
                 </tr>
               ))}
             </tbody>

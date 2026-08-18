@@ -11,12 +11,12 @@ type ChatStep =
   | "greeting"
   | "menu"
   | "services"
-  | "service_detail"
-  | "appointment"
   | "collect_name"
   | "collect_email"
   | "collect_message"
   | "done";
+
+interface FormData { name: string; email: string; service: string; message: string; }
 
 export default function Chatbot() {
   const { t, dir } = useLang();
@@ -24,37 +24,39 @@ export default function Chatbot() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [step, setStep] = useState<ChatStep>("greeting");
   const [input, setInput] = useState("");
-  const [_formData, setFormData] = useState({ name: "", email: "", service: "", message: "" });
+  const formRef = useRef<FormData>({ name: "", email: "", service: "", message: "" });
   const [unread, setUnread] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const initializedRef = useRef(false);
 
-  // Init greeting
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Init greeting — run once on mount
   useEffect(() => {
-    if (msgs.length === 0) {
-      setTimeout(() => {
-        setMsgs([{ role: "bot", text: t("chat_greeting") }]);
-        setTimeout(() => showMenu(), 1200);
-      }, 500);
-    }
-  }, []); // intentional: run once on mount
-
-  // Re-init when language changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (msgs.length > 0) {
-      setMsgs([{ role: "bot", text: t("chat_greeting") }]);
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+    const greeting = t("chat_greeting");
+    setTimeout(() => {
+      setMsgs([{ role: "bot", text: greeting }]);
       setStep("menu");
-    }
+    }, 500);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Re-init when language changes (after first render)
+  const prevLangRef = useRef(t);
+  useEffect(() => {
+    if (prevLangRef.current === t) return;
+    prevLangRef.current = t;
+    setMsgs([{ role: "bot", text: t("chat_greeting") }]);
+    setStep("menu");
   }, [t]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!open && msgs.length > 1) setUnread((u) => u + 1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgs]);
 
   useEffect(() => {
@@ -71,13 +73,8 @@ export default function Chatbot() {
     setMsgs((prev) => [...prev, { role: "user", text }]);
   };
 
-  const showMenu = () => {
-    setStep("menu");
-  };
-
   const handleQuickReply = (label: string, value: string) => {
     addUser(label);
-
     if (value === "services") {
       addBot(t("chat_q1"), 700);
       setStep("services");
@@ -94,7 +91,7 @@ export default function Chatbot() {
       addBot(t("chat_name_ask"), 700);
       setStep("collect_name");
     } else if (["color", "styling", "pro", "wedding", "other"].includes(value)) {
-      setFormData((f) => ({ ...f, service: label }));
+      formRef.current.service = label;
       addBot(t("chat_name_ask"), 700);
       setStep("collect_name");
     }
@@ -107,20 +104,20 @@ export default function Chatbot() {
     addUser(val);
 
     if (step === "collect_name") {
-      setFormData((f) => ({ ...f, name: val }));
+      formRef.current.name = val;
       addBot(t("chat_email_ask"), 700);
       setStep("collect_email");
     } else if (step === "collect_email") {
-      setFormData((f) => ({ ...f, email: val }));
+      formRef.current.email = val;
       addBot(t("chat_msg_ask"), 700);
       setStep("collect_message");
     } else if (step === "collect_message") {
-      setFormData((f) => ({ ...f, message: val }));
+      formRef.current.message = val;
       addBot(t("chat_thanks"), 800);
       setStep("done");
-      // In production: send formData to your API here
+      // In production: send formRef.current to your API here
+      // fetch("/api/contact", { method: "POST", body: JSON.stringify(formRef.current) })
     } else {
-      // Generic fallback
       addBot(t("chat_greeting"), 700);
       setStep("menu");
     }
@@ -180,13 +177,9 @@ export default function Chatbot() {
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ minHeight: 0 }}>
             {msgs.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? (dir === "rtl" ? "justify-start" : "justify-end") : (dir === "rtl" ? "justify-end" : "justify-start")}`}>
-                <div
-                  className={`max-w-[80%] px-4 py-2.5 font-montserrat text-xs leading-relaxed ${
-                    m.role === "bot"
-                      ? "bg-ivory text-black border border-taupe/20"
-                      : "bg-black text-[#FCFAF7]"
-                  }`}
-                >
+                <div className={`max-w-[80%] px-4 py-2.5 font-montserrat text-xs leading-relaxed ${
+                  m.role === "bot" ? "bg-ivory text-black border border-taupe/20" : "bg-black text-[#FCFAF7]"
+                }`}>
                   {m.text}
                 </div>
               </div>
@@ -196,20 +189,14 @@ export default function Chatbot() {
             {step === "menu" && (
               <div className="space-y-2 mt-2">
                 {menuItems.map((item) => (
-                  <button
-                    key={item.value}
-                    onClick={() => handleQuickReply(item.label, item.value)}
-                    className="w-full text-left px-4 py-2.5 border border-taupe/30 hover:border-gold hover:text-gold font-montserrat text-[10px] tracking-[0.1em] uppercase transition-all duration-200 flex items-center justify-between"
-                  >
+                  <button key={item.value} onClick={() => handleQuickReply(item.label, item.value)}
+                    className="w-full text-left px-4 py-2.5 border border-taupe/30 hover:border-gold hover:text-gold font-montserrat text-[10px] tracking-[0.1em] uppercase transition-all duration-200 flex items-center justify-between">
                     {item.label}
                     <ChevronRight size={12} className="text-gold shrink-0" />
                   </button>
                 ))}
-                <Link
-                  href="/contact"
-                  onClick={() => setOpen(false)}
-                  className="block w-full text-center px-4 py-2.5 bg-gold text-[#FCFAF7] font-montserrat text-[10px] tracking-[0.2em] uppercase hover:bg-[#A8894E] transition-colors duration-200 mt-2"
-                >
+                <Link href="/reserver" onClick={() => setOpen(false)}
+                  className="block w-full text-center px-4 py-2.5 bg-gold text-[#FCFAF7] font-montserrat text-[10px] tracking-[0.2em] uppercase hover:bg-[#A8894E] transition-colors duration-200 mt-2">
                   {t("nav_consultation")}
                 </Link>
               </div>
@@ -218,11 +205,8 @@ export default function Chatbot() {
             {step === "services" && (
               <div className="space-y-2 mt-2">
                 {serviceItems.map((item) => (
-                  <button
-                    key={item.value}
-                    onClick={() => handleQuickReply(item.label, item.value)}
-                    className="w-full text-left px-4 py-2.5 border border-taupe/30 hover:border-gold hover:text-gold font-montserrat text-[10px] tracking-[0.1em] uppercase transition-all duration-200 flex items-center justify-between"
-                  >
+                  <button key={item.value} onClick={() => handleQuickReply(item.label, item.value)}
+                    className="w-full text-left px-4 py-2.5 border border-taupe/30 hover:border-gold hover:text-gold font-montserrat text-[10px] tracking-[0.1em] uppercase transition-all duration-200 flex items-center justify-between">
                     {item.label}
                     <ChevronRight size={12} className="text-gold shrink-0" />
                   </button>
@@ -232,11 +216,8 @@ export default function Chatbot() {
 
             {step === "done" && (
               <div className="mt-2">
-                <Link
-                  href="/contact"
-                  onClick={() => setOpen(false)}
-                  className="block w-full text-center px-4 py-2.5 bg-gold text-[#FCFAF7] font-montserrat text-[10px] tracking-[0.2em] uppercase hover:bg-[#A8894E] transition-colors duration-200"
-                >
+                <Link href="/contact" onClick={() => setOpen(false)}
+                  className="block w-full text-center px-4 py-2.5 bg-gold text-[#FCFAF7] font-montserrat text-[10px] tracking-[0.2em] uppercase hover:bg-[#A8894E] transition-colors duration-200">
                   {t("nav_contact")}
                 </Link>
               </div>
@@ -257,10 +238,8 @@ export default function Chatbot() {
                 className="flex-1 border border-taupe/30 px-3 py-2 font-montserrat text-xs focus:border-gold focus:outline-none bg-transparent"
                 autoFocus
               />
-              <button
-                onClick={handleSend}
-                className="bg-black text-[#FCFAF7] w-9 h-9 flex items-center justify-center hover:bg-gold transition-colors duration-200"
-              >
+              <button onClick={handleSend}
+                className="bg-black text-[#FCFAF7] w-9 h-9 flex items-center justify-center hover:bg-gold transition-colors duration-200">
                 <Send size={14} />
               </button>
             </div>
