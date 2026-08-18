@@ -18,16 +18,18 @@ export default function Navbar() {
   }, []);
 
   const serviceLinks = [
-    { label: t("nav_services"), href: "/services" },
+    { label: "Tous les Services", href: "/services" },
     { label: "Analyse Colorimetrique", href: "/color-analysis" },
     { label: "Stylisme Personnel", href: "/personal-styling" },
     { label: "Image Professionnelle", href: "/professional-image" },
     { label: "Stylisme Mariage", href: "/wedding-styling" },
+    { label: "Occasions & Evenements", href: "/evenements" },
   ];
 
   const navLinks = [
     { label: t("nav_home"), href: "/" },
     { label: t("nav_about"), href: "/about" },
+    { label: "Evenements", href: "/evenements" },
     { label: t("nav_testimonials"), href: "/testimonials" },
     { label: t("nav_blog"), href: "/blog" },
     { label: t("nav_contact"), href: "/contact" },
@@ -68,7 +70,7 @@ export default function Navbar() {
               {t("nav_services")}
             </span>
             {serviceOpen && (
-              <div className="absolute top-full left-0 mt-4 bg-[#FCFAF7] shadow-lg border-t border-gold min-w-[220px] py-2">
+              <div className="absolute top-full left-0 mt-4 bg-[#FCFAF7] shadow-lg border-t border-gold min-w-[240px] py-2 z-50">
                 {serviceLinks.map((s) => (
                   <Link
                     key={s.href}
@@ -96,7 +98,7 @@ export default function Navbar() {
         {/* Right: Language + CTA */}
         <div className="hidden lg:flex items-center gap-4">
           <LanguageSwitcher />
-          <Link href="/contact" className="btn-primary">
+          <Link href="/reserver" className="btn-gold">
             {t("nav_consultation")}
           </Link>
         </div>
@@ -127,6 +129,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          {/* Services mobile */}
           <div className="py-3 border-b border-ivory">
             <div className="font-montserrat text-[11px] tracking-[0.2em] uppercase text-black mb-2">{t("nav_services")}</div>
             {serviceLinks.map((s) => (
@@ -151,8 +154,8 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/contact"
-            className="btn-primary mt-6 block text-center"
+            href="/reserver"
+            className="btn-gold mt-6 block text-center"
             onClick={() => setMobileOpen(false)}
           >
             {t("nav_consultation")}
