@@ -15,12 +15,12 @@ export async function POST(req: Request) {
     // 3. Add RESEND_API_KEY in Vercel Settings > Environment Variables
     // 4. Uncomment the block below:
 
-    /*
+    
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: "Maison Allure <contact@maison-allure.fr>",
-      to: ["votre@email.com"],   // <-- REMPLACER par votre email
+      to: ["sami.sahmarani@gmail.com"],   // <-- REMPLACER par votre email
       subject: `Nouvelle demande de ${name} - ${service || "Consultation"}`,
       html: `
         <h2>Nouvelle demande de consultation - Maison Allure</h2>
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         <p><strong>Message :</strong> ${message || "Aucun message"}</p>
       `,
     });
-    */
+    
 
     // --- OPTION B: EmailJS (no backend needed) ---
     // Configure EmailJS at emailjs.com and use their client-side SDK instead
