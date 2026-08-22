@@ -6,21 +6,13 @@ import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
 import { LanguageProvider } from "@/context/LanguageContext";
 
-// -------------------------------------------------------------------
-// GOOGLE ANALYTICS - CONFIGURATION
-// 1. Aller sur analytics.google.com -> creer une propriete
-// 2. Copier votre Measurement ID (format: G-XXXXXXXXXX)
-// 3. Dans Vercel Settings > Environment Variables, ajouter:
-//    NEXT_PUBLIC_GA_ID = G-VOTRE_VRAI_ID
-// -------------------------------------------------------------------
-
 export const metadata: Metadata = {
   title: {
-    default: "Maison Allure | Conseil en Image & Stylisme Personnel de Luxe",
-    template: "%s | Maison Allure",
+    default: "Maison Oleria | Conseil en Image & Stylisme Personnel de Luxe",
+    template: "%s | Maison Oleria",
   },
   description:
-    "Maison Allure est une maison de conseil en image et stylisme personnel inspiree de l'elegance francaise. Sublimez votre image avec notre expertise en analyse colorimetrique, coaching image et style personnel.",
+    "Maison Oleria est une maison de conseil en image et stylisme personnel inspiree de l'elegance francaise. Sublimez votre image avec notre expertise en analyse colorimetrique, coaching image et style personnel.",
   keywords: [
     "conseil en image",
     "styliste personnel",
@@ -36,21 +28,22 @@ export const metadata: Metadata = {
     "personal stylist",
     "color analysis",
     "french elegance",
+    "maison oleria",
   ],
-  authors: [{ name: "Maison Allure" }],
-  creator: "Maison Allure",
+  authors: [{ name: "Maison Oleria" }],
+  creator: "Maison Oleria",
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://www.maison-allure.fr",
-    siteName: "Maison Allure",
-    title: "Maison Allure | Conseil en Image & Stylisme Personnel de Luxe",
+    url: "https://www.maison-oleria.com",
+    siteName: "Maison Oleria",
+    title: "Maison Oleria | Conseil en Image & Stylisme Personnel de Luxe",
     description:
-      "Revelez votre style unique avec Maison Allure. Conseil en image, analyse colorimetrique et stylisme personnel inspires de l'elegance parisienne.",
+      "Revelez votre style unique avec Maison Oleria. Conseil en image, analyse colorimetrique et stylisme personnel inspires de l'elegance parisienne.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Maison Allure | Conseil en Image de Luxe",
+    title: "Maison Oleria | Conseil en Image de Luxe",
     description: "Sublimez votre image avec l'elegance francaise.",
   },
   robots: {

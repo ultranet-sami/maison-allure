@@ -21,13 +21,7 @@ const services = [
   "Autre",
 ];
 
-// -------------------------------------------------------------------
-// CALENDLY CONFIGURATION
-// 1. Creer un compte gratuit sur calendly.com
-// 2. Configurer vos disponibilites
-// 3. Remplacer "votre-username" ci-dessous par votre vrai username Calendly
-// -------------------------------------------------------------------
-const CALENDLY_URL = "https://calendly.com/sami-sahmarani/consultation-maison-allure";
+const CALENDLY_URL = "https://calendly.com/votre-username/consultation-maison-oleria";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -97,7 +91,7 @@ export default function ContactPage() {
         </div>
       </motion.section>
 
-      {/* BOOKING CTA - CALENDLY */}
+      {/* BOOKING CTA */}
       <section className="py-16 bg-black">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <p className="section-subtitle mb-4 text-gold">Reservation en Ligne</p>
@@ -106,17 +100,10 @@ export default function ContactPage() {
           </h2>
           <p className="font-montserrat text-sm text-[#C8B8A6] mb-8 max-w-xl mx-auto">
             Choisissez le creneau qui vous convient le mieux dans notre agenda en ligne.
-            Consultation disponible en presentiel a Paris ou en visioconference.
           </p>
-          <button
-            onClick={openCalendly}
-            className="btn-gold inline-block"
-          >
+          <button onClick={openCalendly} className="btn-gold inline-block">
             Voir les Disponibilites
           </button>
-          <p className="font-montserrat text-[10px] text-[#C8B8A6]/60 mt-4">
-            Powered by Calendly — Confirmation immediate par email
-          </p>
         </div>
       </section>
 
@@ -134,9 +121,7 @@ export default function ContactPage() {
               <p className="section-subtitle mb-4">Informations</p>
               <h2 className="section-title mb-8">Parlons de Vous</h2>
               <p className="font-montserrat text-sm text-black/70 leading-relaxed mb-10">
-                Chaque transformation commence par une conversation. Partagez vos aspirations,
-                vos contraintes et vos objectifs. Nous vous proposerons l&apos;accompagnement
-                le plus adapte a votre situation.
+                Chaque transformation commence par une conversation.
               </p>
             </motion.div>
 
@@ -144,7 +129,7 @@ export default function ContactPage() {
               {[
                 { Icon: MapPin, label: "Adresse", main: "Paris, France", sub: "Consultations sur rendez-vous" },
                 { Icon: Phone, label: "Telephone", main: "+33 6 00 00 00 00", link: "tel:+33600000000" },
-                { Icon: Mail, label: "Email", main: "contact@maison-allure.fr", link: "mailto:contact@maison-allure.fr" },
+                { Icon: Mail, label: "Email", main: "info.oleria@maison-oleria.com", link: "mailto:info.oleria@maison-oleria.com" },
                 { Icon: Clock, label: "Disponibilites", main: "Lundi - Samedi : 9h - 19h", sub: "Visioconference pour clientele internationale" },
               ].map(({ Icon, label, main, sub, link }) => (
                 <motion.div key={label} variants={fadeUp} className="flex items-start gap-4">
@@ -168,26 +153,16 @@ export default function ContactPage() {
               <div className="font-montserrat text-[10px] tracking-[0.3em] uppercase text-black/40 mb-4">Reseaux Sociaux</div>
               <div className="flex gap-3">
                 {[
-                  { Icon: Instagram, label: "@maison.allure" },
-                  { Icon: Facebook, label: "Maison Allure" },
-                  { Icon: Linkedin, label: "Maison Allure" },
-                ].map(({ Icon, label }) => (
-                  <a key={label} href="#" className="flex items-center gap-2 border border-taupe/30 px-4 py-2 hover:border-gold transition-colors duration-300">
+                  { Icon: Instagram, label: "@maison.oleria", href: "https://instagram.com/maison.oleria" },
+                  { Icon: Facebook, label: "Maison Oleria", href: "https://facebook.com/maisonoleria" },
+                  { Icon: Linkedin, label: "Maison Oleria", href: "https://linkedin.com/company/maison-oleria" },
+                ].map(({ Icon, label, href }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 border border-taupe/30 px-4 py-2 hover:border-gold transition-colors duration-300">
                     <Icon size={14} className="text-gold" />
                     <span className="font-montserrat text-[10px] text-black/60">{label}</span>
                   </a>
                 ))}
-              </div>
-            </motion.div>
-
-            {/* Map placeholder */}
-            <motion.div variants={fadeUp} className="mt-10 bg-ivory aspect-[16/9] flex items-center justify-center border border-taupe/20">
-              <div className="text-center">
-                <MapPin size={24} className="text-gold mx-auto mb-2" />
-                <div className="font-montserrat text-xs text-black/40">Paris, France</div>
-                <div className="font-montserrat text-[10px] text-black/30">
-                  Remplacez par un embed Google Maps
-                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -252,20 +227,16 @@ export default function ContactPage() {
                     name="message"
                     rows={5}
                     required
-                    placeholder="Parlez-nous de vous, de vos objectifs et de ce que vous souhaitez ameliorer dans votre image..."
+                    placeholder="Parlez-nous de vous, de vos objectifs..."
                     className="w-full border border-taupe/40 bg-white px-4 py-3 font-montserrat text-sm focus:border-gold focus:outline-none resize-none"
                   />
                 </div>
-                <button
-                  type="submit"
-                  disabled={status === "sending"}
-                  className="btn-primary w-full disabled:opacity-60"
-                >
+                <button type="submit" disabled={status === "sending"} className="btn-primary w-full disabled:opacity-60">
                   {status === "sending" ? "Envoi en cours..." : "Envoyer Ma Demande"}
                 </button>
                 {status === "error" && (
                   <p className="font-montserrat text-xs text-red-500 text-center">
-                    Une erreur est survenue. Veuillez reessayer ou nous contacter directement par email.
+                    Une erreur est survenue. Contactez-nous directement : info.oleria@maison-oleria.com
                   </p>
                 )}
               </form>
@@ -285,10 +256,9 @@ export default function ContactPage() {
           <div className="space-y-6">
             {[
               { q: "Combien coute une consultation ?", a: "Nos tarifs varient selon le service choisi. Nous proposons une consultation decouverte gratuite de 20 minutes pour evaluer vos besoins avant tout engagement." },
-              { q: "Travaillez-vous en ligne ?", a: "Oui, nous proposons des consultations en visioconference pour notre clientele hors Paris et internationale. La plupart de nos services peuvent etre adaptes a distance." },
-              { q: "Combien de temps dure une seance ?", a: "Les seances varient de 2h (analyse colorimetrique simple) a une journee complete (conseil en image global). Nous definissons la duree lors de notre premier echange." },
-              { q: "Faut-il avoir un budget mode important ?", a: "Absolument pas. Notre expertise s'adapte a tous les budgets. Nous maximisons ce que vous avez deja et vous guidons vers des achats rentables et durables." },
-              { q: "Combien de temps avant de voir des resultats ?", a: "Les premiers resultats sont visibles des la premiere seance. La transformation complete se fait sur 1 a 3 mois selon les services choisis." },
+              { q: "Travaillez-vous en ligne ?", a: "Oui, nous proposons des consultations en visioconference pour notre clientele hors Paris et internationale." },
+              { q: "Comment vous contacter rapidement ?", a: "Envoyez un email a info.oleria@maison-oleria.com ou remplissez le formulaire ci-dessus. Reponse garantie sous 24h." },
+              { q: "Faut-il avoir un budget mode important ?", a: "Absolument pas. Notre expertise s'adapte a tous les budgets." },
             ].map((faq) => (
               <motion.div
                 key={faq.q}

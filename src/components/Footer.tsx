@@ -11,7 +11,7 @@ export default function Footer() {
           <div>
             <div className="mb-6">
               <div className="font-playfair text-2xl tracking-widest text-white">MAISON</div>
-              <div className="font-montserrat text-[10px] tracking-[0.4em] text-gold uppercase">ALLURE</div>
+              <div className="font-montserrat text-[10px] tracking-[0.4em] text-gold uppercase">OLERIA</div>
             </div>
             <p className="font-montserrat text-sm text-taupe leading-relaxed mb-6">
               L&apos;art de reveler votre style unique a travers l&apos;elegance francaise et
@@ -19,13 +19,15 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               {[
-                { Icon: Instagram, href: "#" },
-                { Icon: Facebook, href: "#" },
-                { Icon: Linkedin, href: "#" },
+                { Icon: Instagram, href: "https://instagram.com/maison.oleria" },
+                { Icon: Facebook, href: "https://facebook.com/maisonoleria" },
+                { Icon: Linkedin, href: "https://linkedin.com/company/maison-oleria" },
               ].map(({ Icon, href }, i) => (
                 <a
                   key={i}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 border border-gold/30 flex items-center justify-center hover:border-gold hover:text-gold transition-all duration-300"
                 >
                   <Icon size={15} />
@@ -45,6 +47,7 @@ export default function Footer() {
                 ["Image Professionnelle", "/professional-image"],
                 ["Stylisme Mariage", "/wedding-styling"],
                 ["Shopping Accompagne", "/services"],
+                ["Occasions & Evenements", "/evenements"],
               ].map(([label, href]) => (
                 <li key={href}>
                   <Link
@@ -66,6 +69,7 @@ export default function Footer() {
                 ["A Propos", "/about"],
                 ["Temoignages", "/testimonials"],
                 ["Blog", "/blog"],
+                ["Reserver", "/reserver"],
                 ["Contact", "/contact"],
               ].map(([label, href]) => (
                 <li key={href}>
@@ -96,9 +100,14 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={14} className="text-gold shrink-0" />
-                <a href="mailto:contact@maison-allure.fr" className="font-montserrat text-xs text-taupe hover:text-gold transition-colors">
-                  contact@maison-allure.fr
+                <a href="mailto:info.oleria@maison-oleria.com" className="font-montserrat text-xs text-taupe hover:text-gold transition-colors">
+                  info.oleria@maison-oleria.com
                 </a>
+              </li>
+              <li className="mt-4">
+                <Link href="/reserver" className="btn-gold block text-center text-xs">
+                  Reserver une Consultation
+                </Link>
               </li>
             </ul>
           </div>
@@ -109,7 +118,7 @@ export default function Footer() {
       <div className="py-6">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-montserrat text-[10px] tracking-widest text-taupe">
-            &copy; {new Date().getFullYear()} Maison Allure. Tous droits reserves.
+            &copy; {new Date().getFullYear()} Maison Oleria. Tous droits reserves.
           </p>
           <div className="flex gap-6">
             {["Mentions legales", "Politique de confidentialite", "CGV"].map((item) => (

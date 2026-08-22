@@ -712,7 +712,7 @@ export default function ReserverPage() {
   // -------------------------------------------------------
   // STEP 7 : Calendly
   // -------------------------------------------------------
-  const CALENDLY_URL = "https://calendly.com/sami-sahmarani/consultation-maison-allure";
+  const CALENDLY_URL = "https://calendly.com/votre-username/consultation-maison-allure";
 
   const Step7 = () => (
     <div className="max-w-2xl mx-auto text-center">

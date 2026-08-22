@@ -1,21 +1,9 @@
 /**
- * CMS-Agnostic Content Layer
- * ---------------------------
- * This file abstracts the CMS provider. Currently configured for Storyblok.
- * To switch to another CMS (Sanity, Contentful, etc.), only modify this file.
- *
- * SETUP:
- * 1. Create a free account at app.storyblok.com
- * 2. Create a Space named "maison-allure"
- * 3. Go to Settings > API-Keys > copy the Public Token
- * 4. Add to Vercel Settings > Environment Variables:
- *    STORYBLOK_API_TOKEN = your_token_here
- *    STORYBLOK_VERSION = published (or draft for preview)
+ * CMS-Agnostic Content Layer — Maison Oleria
+ * -------------------------------------------
+ * Switch CMS by updating only this file.
+ * Configure Storyblok: add STORYBLOK_API_TOKEN in Vercel env vars.
  */
-
-// ----------------------------------------------------------------
-// CONTENT TYPES - Add your content structure here
-// ----------------------------------------------------------------
 
 export interface HeroContent {
   title: string;
@@ -77,17 +65,12 @@ export interface SiteContent {
   contact: ContactInfo;
 }
 
-// ----------------------------------------------------------------
-// DEFAULT FALLBACK CONTENT (used when CMS is not configured)
-// Edit this to update your site content without a CMS
-// ----------------------------------------------------------------
-
 export const defaultContent: SiteContent = {
   hero: {
     title: "L'Art de Reveler Votre Elegance Naturelle",
     subtitle: "Maison de Conseil en Image",
     description:
-      "Inspiree de l'elegance francaise intemporelle, Maison Allure vous accompagne dans la revelation de votre style unique.",
+      "Inspiree de l'elegance francaise intemporelle, Maison Oleria vous accompagne dans la revelation de votre style unique.",
     cta_primary: "Prendre Rendez-vous",
     cta_secondary: "Decouvrir Nos Services",
     video_url: "/hero.mp4",
@@ -97,36 +80,31 @@ export const defaultContent: SiteContent = {
     {
       id: "color-analysis",
       title: "Analyse Colorimetrique",
-      description:
-        "Decouvrez la palette de couleurs qui sublime votre teint et votre personnalite.",
+      description: "Decouvrez la palette de couleurs qui sublime votre teint et votre personnalite.",
       href: "/color-analysis",
     },
     {
       id: "personal-styling",
       title: "Stylisme Personnel",
-      description:
-        "Construisez un style authentique et elegant en harmonie avec qui vous etes.",
+      description: "Construisez un style authentique et elegant en harmonie avec qui vous etes.",
       href: "/personal-styling",
     },
     {
       id: "professional-image",
       title: "Image Professionnelle",
-      description:
-        "Affirmez votre leadership avec une image forte et une presence executive.",
+      description: "Affirmez votre leadership avec une image forte et une presence executive.",
       href: "/professional-image",
     },
     {
       id: "wedding-styling",
       title: "Stylisme Mariage",
-      description:
-        "Vivez le plus beau jour de votre vie avec un style parfaitement orchestre.",
+      description: "Vivez le plus beau jour de votre vie avec un style parfaitement orchestre.",
       href: "/wedding-styling",
     },
     {
       id: "shopping",
       title: "Shopping Accompagne",
-      description:
-        "Des selections personnalisees pour une garde-robe qui vous ressemble.",
+      description: "Des selections personnalisees pour une garde-robe qui vous ressemble.",
       href: "/services",
     },
     {
@@ -141,7 +119,7 @@ export const defaultContent: SiteContent = {
       id: "1",
       name: "Sophie M.",
       role: "Directrice Marketing",
-      text: "Maison Allure a litteralement transforme ma facon de me presenter. Je me sens enfin alignee avec qui je suis vraiment.",
+      text: "Maison Oleria a litteralement transforme ma facon de me presenter. Je me sens enfin alignee avec qui je suis vraiment.",
       rating: 5,
       service: "Conseil en Image",
     },
@@ -167,8 +145,7 @@ export const defaultContent: SiteContent = {
       id: "1",
       slug: "guide-analyse-colorimetrique",
       title: "Guide Complet de l'Analyse Colorimetrique",
-      excerpt:
-        "Decouvrez tout ce qu'il faut savoir sur l'analyse colorimetrique : les 4 saisons et comment identifier votre palette.",
+      excerpt: "Decouvrez tout ce qu'il faut savoir sur l'analyse colorimetrique : les 4 saisons et comment identifier votre palette.",
       category: "Analyse Colorimetrique",
       date: "15 Janvier 2026",
       readTime: "8 min",
@@ -178,8 +155,7 @@ export const defaultContent: SiteContent = {
       id: "2",
       slug: "elegance-parisienne",
       title: "Les 10 Regles d'Or de l'Elegance Parisienne",
-      excerpt:
-        "Qu'est-ce qui rend les Parisiennes si chic ? Les secrets de l'elegance a la francaise.",
+      excerpt: "Qu'est-ce qui rend les Parisiennes si chic ? Les secrets de l'elegance a la francaise.",
       category: "Elegance Francaise",
       date: "8 Janvier 2026",
       readTime: "6 min",
@@ -188,28 +164,20 @@ export const defaultContent: SiteContent = {
   ],
   contact: {
     phone: "+33 6 00 00 00 00",
-    email: "contact@maison-allure.fr",
+    email: "info.oleria@maison-oleria.com",
     address: "Paris",
     city: "France",
     hours: "Lundi - Samedi : 9h - 19h",
-    instagram: "https://instagram.com/maison.allure",
-    facebook: "https://facebook.com/maisonallure",
-    linkedin: "https://linkedin.com/company/maison-allure",
+    instagram: "https://instagram.com/maison.oleria",
+    facebook: "https://facebook.com/maisonoleria",
+    linkedin: "https://linkedin.com/company/maison-oleria",
   },
 };
-
-// ----------------------------------------------------------------
-// STORYBLOK ADAPTER
-// When STORYBLOK_API_TOKEN is configured, content is fetched from Storyblok.
-// Otherwise, defaultContent is used.
-// ----------------------------------------------------------------
 
 async function fetchFromStoryblok(slug: string) {
   const token = process.env.STORYBLOK_API_TOKEN;
   const version = process.env.STORYBLOK_VERSION || "published";
-
   if (!token) return null;
-
   try {
     const res = await fetch(
       `https://api.storyblok.com/v2/cdn/stories/${slug}?token=${token}&version=${version}`,
@@ -222,10 +190,6 @@ async function fetchFromStoryblok(slug: string) {
     return null;
   }
 }
-
-// ----------------------------------------------------------------
-// PUBLIC API - Use these functions in your pages
-// ----------------------------------------------------------------
 
 export async function getHeroContent(): Promise<HeroContent> {
   const sb = await fetchFromStoryblok("home/hero");
@@ -286,14 +250,10 @@ export async function getBlogPosts(featured?: boolean): Promise<BlogPost[]> {
       featured: Boolean(item.featured),
       image_url: item.image_url as string,
     }));
-    return featured !== undefined
-      ? posts.filter((p) => p.featured === featured)
-      : posts;
+    return featured !== undefined ? posts.filter((p) => p.featured === featured) : posts;
   }
   const posts = defaultContent.blog_posts;
-  return featured !== undefined
-    ? posts.filter((p) => p.featured === featured)
-    : posts;
+  return featured !== undefined ? posts.filter((p) => p.featured === featured) : posts;
 }
 
 export async function getContactInfo(): Promise<ContactInfo> {
