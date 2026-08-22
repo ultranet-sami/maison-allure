@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
@@ -84,6 +85,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Footer />
           <Chatbot />
         </LanguageProvider>
+        <Analytics />
         <script
           src="https://assets.calendly.com/assets/external/widget.js"
           async
